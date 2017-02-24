@@ -71,6 +71,11 @@ func (handler *Handler) HandleEvents(events []*linebot.Event) {
 	var wg sync.WaitGroup
 
 	for _, event := range events {
+		// check verification
+		if event.ReplyToken == "00000000000000000000000000000000" {
+			log.Print("verification")
+			return
+		}
 		wg.Add(1)
 		go func(event *linebot.Event) {
 			if err := handler.handleEvent(event); err != nil {
