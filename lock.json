@@ -1,0 +1,22 @@
+{
+    "memo": "",
+    "projects": [
+        {
+            "name": "github.com/line/line-bot-sdk-go",
+            "branch": "master",
+            "revision": "4984f0f7a70400e41ca3b9d5af461de9a8abe43f",
+            "packages": [
+                "linebot"
+            ]
+        },
+        {
+            "name": "golang.org/x/net",
+            "branch": "master",
+            "revision": "b4690f45fa1cafc47b1c280c2e75116efe40cc13",
+            "packages": [
+                "context",
+                "context/ctxhttp"
+            ]
+        }
+    ]
+}
