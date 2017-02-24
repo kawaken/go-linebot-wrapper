@@ -42,8 +42,18 @@ type Handler struct {
 	OnError func(http.ResponseWriter, *http.Request, error)
 }
 
-// New returns a Handler using *linebot.Client
-func New(client *linebot.Client) (*Handler, error) {
+// New returns a Handler
+func New(channelSecret string, channelToken string) (*Handler, error) {
+	client, err := linebot.New(channelSecret, channelToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewWithClient(client)
+}
+
+// NewWithClient returns a Handler using *linebot.Client
+func NewWithClient(client *linebot.Client) (*Handler, error) {
 	if client == nil {
 		return nil, fmt.Errorf("linebot.Client is nil")
 	}
