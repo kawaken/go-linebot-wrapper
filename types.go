@@ -1,4 +1,4 @@
-package wrapper
+package rod
 
 import "github.com/line/line-bot-sdk-go/linebot"
 
