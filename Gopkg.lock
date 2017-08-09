@@ -1,0 +1,13 @@
+memo = "13e0723288d412ca6c7470a350ef6ead725352419209f64d120ffc8135ac0c1b"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/line/line-bot-sdk-go"
+  packages = ["linebot"]
+  revision = "4984f0f7a70400e41ca3b9d5af461de9a8abe43f"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context","context/ctxhttp"]
+  revision = "1a68b1313cf4ad7778376e82641197b60c02f65c"
