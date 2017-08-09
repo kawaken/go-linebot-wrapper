@@ -14,30 +14,30 @@ type Handler struct {
 	client *linebot.Client
 
 	// Message Event
-	OnTextMessageRecieved     TextMessageHandlerFunc
-	OnImageMessageRecieved    ImageMessageHandlerFunc
-	OnVideoMessageRecieved    VideoMessageHandlerFunc
-	OnAudioMessageRecieved    AudioMessageHandlerFunc
-	OnLocationMessageRecieved LocationMessageHandlerFunc
-	OnStickerMessageRecieved  StickerMessageHandlerFunc
+	textMessageHandlerFunc     TextMessageHandlerFunc
+	imageMessageHandlerFunc    ImageMessageHandlerFunc
+	videoMessageHandlerFunc    VideoMessageHandlerFunc
+	audioMessageHandlerFunc    AudioMessageHandlerFunc
+	locationMessageHandlerFunc LocationMessageHandlerFunc
+	stickerMessageHandlerFunc  StickerMessageHandlerFunc
 
 	// Follow/Unfollow Event
-	OnFollowed   FollowEventHandlerFunc
-	OnUnfollowed UnfollowEventHandlerFunc
+	followEventHandlerFunc   FollowEventHandlerFunc
+	unfollowEventHandlerFunc UnfollowEventHandlerFunc
 
 	// Join/Leave Event
-	OnJoinGroup     JoinGroupEventHandlerFunc
-	OnLeaveGroup    LeaveGroupEventHandlerFunc
-	OnJoinTalkRoom  JoinTalkRoomEventHandlerFunc
-	OnLeaveTalkRoom LeaveTalkRoomEventHandlerFunc
+	joinGroupEventHandlerFunc     JoinGroupEventHandlerFunc
+	leaveGroupEventHandlerFunc    LeaveGroupEventHandlerFunc
+	joinTalkRoomEventHandlerFunc  JoinTalkRoomEventHandlerFunc
+	leaveTalkRoomEventHandlerFunc LeaveTalkRoomEventHandlerFunc
 
 	// Postback Event
-	OnPostback PostbackEventHandlerFunc
+	postbackEventHandlerFunc PostbackEventHandlerFunc
 
 	// Beacon Event
-	OnBeaconEnter        BeaconEnterEventHandlerFunc
-	OnBeaconLeave        BeaconLeaveEventHandlerFunc
-	OnBeaconBannerTapped BeaconBannerEventHandlerFunc
+	beaconEnterEventHandlerFunc  BeaconEnterEventHandlerFunc
+	beaconLeaveEventHandlerFunc  BeaconLeaveEventHandlerFunc
+	beaconBannerEventHandlerFunc BeaconBannerEventHandlerFunc
 
 	OnError func(http.ResponseWriter, *http.Request, error)
 }
@@ -106,84 +106,113 @@ func (handler *Handler) handleEvent(event *linebot.Event) error {
 
 		switch message := event.Message.(type) {
 		case *linebot.TextMessage:
-			if handler.OnTextMessageRecieved != nil {
-				replyMessages = handler.OnTextMessageRecieved(event, message)
+			if handler.textMessageHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.textMessageHandlerFunc(event, message)
+
 		case *linebot.ImageMessage:
-			if handler.OnImageMessageRecieved != nil {
-				replyMessages = handler.OnImageMessageRecieved(event, message)
+			if handler.imageMessageHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.imageMessageHandlerFunc(event, message)
+
 		case *linebot.VideoMessage:
-			if handler.OnVideoMessageRecieved != nil {
-				replyMessages = handler.OnVideoMessageRecieved(event, message)
+			if handler.videoMessageHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.videoMessageHandlerFunc(event, message)
+
 		case *linebot.AudioMessage:
-			if handler.OnAudioMessageRecieved != nil {
-				replyMessages = handler.OnAudioMessageRecieved(event, message)
+			if handler.audioMessageHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.audioMessageHandlerFunc(event, message)
+
 		case *linebot.LocationMessage:
-			if handler.OnLocationMessageRecieved != nil {
-				replyMessages = handler.OnLocationMessageRecieved(event, message)
+			if handler.locationMessageHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.locationMessageHandlerFunc(event, message)
+
 		case *linebot.StickerMessage:
-			if handler.OnStickerMessageRecieved != nil {
-				replyMessages = handler.OnStickerMessageRecieved(event, message)
+			if handler.stickerMessageHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.stickerMessageHandlerFunc(event, message)
+
 		}
 
 	case linebot.EventTypeFollow:
-		if handler.OnFollowed != nil {
-			replyMessages = handler.OnFollowed(event, event.Source.UserID)
+		if handler.followEventHandlerFunc == nil {
+			return ErrNoHandleFunc
 		}
+		replyMessages = handler.followEventHandlerFunc(event, event.Source.UserID)
 
 	case linebot.EventTypeUnfollow:
-		if handler.OnUnfollowed != nil {
-			replyMessages = handler.OnUnfollowed(event, event.Source.UserID)
+		if handler.unfollowEventHandlerFunc == nil {
+			return ErrNoHandleFunc
 		}
+		replyMessages = handler.unfollowEventHandlerFunc(event, event.Source.UserID)
 
 	case linebot.EventTypeJoin:
 		switch event.Source.Type {
 		case linebot.EventSourceTypeGroup:
-			if handler.OnJoinGroup != nil {
-				replyMessages = handler.OnJoinGroup(event, event.Source.GroupID)
+			if handler.joinGroupEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.joinGroupEventHandlerFunc(event, event.Source.GroupID)
+
 		case linebot.EventSourceTypeRoom:
-			if handler.OnJoinTalkRoom != nil {
-				replyMessages = handler.OnJoinTalkRoom(event, event.Source.RoomID)
+			if handler.joinTalkRoomEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.joinTalkRoomEventHandlerFunc(event, event.Source.RoomID)
+
 		}
 
 	case linebot.EventTypeLeave:
 		switch event.Source.Type {
 		case linebot.EventSourceTypeGroup:
-			if handler.OnLeaveGroup != nil {
-				replyMessages = handler.OnLeaveGroup(event, event.Source.GroupID)
+			if handler.leaveGroupEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.leaveGroupEventHandlerFunc(event, event.Source.GroupID)
+
 		case linebot.EventSourceTypeRoom:
-			if handler.OnLeaveTalkRoom != nil {
-				replyMessages = handler.OnLeaveTalkRoom(event, event.Source.RoomID)
+			if handler.leaveTalkRoomEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.leaveTalkRoomEventHandlerFunc(event, event.Source.RoomID)
+
 		}
 
 	case linebot.EventTypePostback:
-		if handler.OnPostback != nil {
-			replyMessages = handler.OnPostback(event, event.Postback.Data)
+		if handler.postbackEventHandlerFunc == nil {
+			return ErrNoHandleFunc
 		}
+		replyMessages = handler.postbackEventHandlerFunc(event, event.Postback.Data)
 
 	case linebot.EventTypeBeacon:
 		switch event.Beacon.Type {
 		case linebot.BeaconEventTypeEnter:
-			if handler.OnBeaconEnter != nil {
-				replyMessages = handler.OnBeaconEnter(event, event.Beacon.Hwid)
+			if handler.beaconEnterEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.beaconEnterEventHandlerFunc(event, event.Beacon.Hwid)
+
 		case linebot.BeaconEventTypeLeave:
-			if handler.OnBeaconLeave != nil {
-				replyMessages = handler.OnBeaconLeave(event, event.Beacon.Hwid)
+			if handler.beaconLeaveEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.beaconLeaveEventHandlerFunc(event, event.Beacon.Hwid)
+
 		case linebot.BeaconEventTypeBanner:
-			if handler.OnBeaconBannerTapped != nil {
-				replyMessages = handler.OnBeaconBannerTapped(event, event.Beacon.Hwid)
+			if handler.beaconBannerEventHandlerFunc == nil {
+				return ErrNoHandleFunc
 			}
+			replyMessages = handler.beaconBannerEventHandlerFunc(event, event.Beacon.Hwid)
+
 		}
 	}
 
