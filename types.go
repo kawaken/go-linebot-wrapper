@@ -68,4 +68,4 @@ type BeaconBannerEventHandlerFunc func(*linebot.Event, string) []linebot.Message
 
 // VerifyMessageHandlerFunc is a function to handle a linebot.TextMessage to verify account.
 // This func returns no values because invalid reply token is used in message.
-type VerifyMessageHandlerFunc func(*linebot.Event, *linebot.TextMessage)
+type VerifyMessageHandlerFunc func(*linebot.Event)
