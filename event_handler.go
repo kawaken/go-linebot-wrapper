@@ -87,6 +87,9 @@ func (handler *Handler) HandleEvents(events []*linebot.Event) {
 		// check verification
 		if event.ReplyToken == "00000000000000000000000000000000" {
 			log.Print("verification")
+			if handler.verifyMessageHandlerFunc != nil {
+				handler.verifyMessageHandlerFunc(event)
+			}
 			return
 		}
 		wg.Add(1)
