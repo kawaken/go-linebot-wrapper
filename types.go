@@ -65,3 +65,7 @@ type BeaconLeaveEventHandlerFunc func(*linebot.Event, string) []linebot.Message
 // BeaconBannerEventHandlerFunc is a function to handle event when user tapped beacon banner.
 // Second argument is the beacon.hwid.
 type BeaconBannerEventHandlerFunc func(*linebot.Event, string) []linebot.Message
+
+// VerifyMessageHandlerFunc is a function to handle a linebot.TextMessage to verify account.
+// This func returns no values because invalid reply token is used in message.
+type VerifyMessageHandlerFunc func(*linebot.Event, *linebot.TextMessage)

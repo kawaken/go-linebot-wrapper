@@ -104,3 +104,8 @@ func (h *Handler) BeaconLeaveEventHandleFunc(f func(*linebot.Event, string) []li
 func (h *Handler) BeaconBannerEventHandleFunc(f func(*linebot.Event, string) []linebot.Message) {
 	h.beaconBannerEventHandlerFunc = f
 }
+
+// VerifyMessageHandleFunc is a function to handle verify event.
+func (h *Handler) VerifyMessageHandleFunc(f func(*linebot.Event, *linebot.TextMessage)) {
+	h.verifyMessageHandlerFunc = f
+}

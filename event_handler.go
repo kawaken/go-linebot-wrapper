@@ -39,6 +39,9 @@ type Handler struct {
 	beaconLeaveEventHandlerFunc  BeaconLeaveEventHandlerFunc
 	beaconBannerEventHandlerFunc BeaconBannerEventHandlerFunc
 
+	// Special Event
+	verifyMessageHandlerFunc VerifyMessageHandlerFunc
+
 	OnError func(http.ResponseWriter, *http.Request, error)
 }
 
