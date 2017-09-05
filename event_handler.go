@@ -90,7 +90,7 @@ func (handler *Handler) HandleEvents(events []*linebot.Event) {
 			if handler.verifyMessageHandlerFunc != nil {
 				handler.verifyMessageHandlerFunc(event)
 			}
-			return
+			continue
 		}
 		wg.Add(1)
 		go func(event *linebot.Event) {
